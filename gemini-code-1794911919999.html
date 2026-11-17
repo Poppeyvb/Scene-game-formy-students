@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Friction Vocabulary Tilt Game (ESL)</title>
+
+  <!-- Link to our custom classroom stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Load MediaPipe Face Mesh from jsDelivr CDN -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.js"
+    crossorigin="anonymous"
+  ></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header: Game Title, Privacy Notice & Scoreboard -->
+    <header class="top-bar">
+      <div class="title-group">
+        <h1>🔬 Friction Vocabulary Tilt Game</h1>
+        <span class="privacy-badge">🔒 Private: Camera runs locally. No images are saved.</span>
+      </div>
+
+      <div class="scoreboard">
+        <div class="stat-pill" id="questionCounter">Question 1 / 8</div>
+        <div class="stat-pill score-pill" id="scoreDisplay">⭐ Score: 0</div>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: Welcome, ESL Word Guide & Camera Permission -->
+    <section id="startScreen" class="card center-card">
+      <h2>Useful or Harmful Friction? 🤔</h2>
+      <p class="intro-text">
+        Read the sentence about <strong>friction</strong> and look at the vocabulary word.<br />
+        Tilt your head to show if the word matches the sentence!
+      </p>
+
+      <!-- ESL Textbook Mini-Definitions for Age 10-12 Learners -->
+      <div class="vocab-guide">
+        <div class="vocab-pill useful-pill">
+          <strong>🛠️ Useful:</strong> Helpful; makes a job easier or safer.
+        </div>
+        <div class="vocab-pill harmful-pill">
+          <strong>⚠️ Harmful:</strong> Causes wear, damage, or makes a job harder.
+        </div>
+      </div>
+
+      <!-- Visual Head-Tilt Controls Guide -->
+      <div class="rules-grid">
+        <div class="rule-box left-rule">
+          <span class="big-emoji">⬅️🙂</span>
+          <h3>Tilt Head LEFT</h3>
+          <p><strong>Correct Match ✅</strong></p>
+        </div>
+        <div class="rule-box right-rule">
+          <span class="big-emoji">🙂➡️</span>
+          <h3>Tilt Head RIGHT</h3>
+          <p><strong>Incorrect Match ❌</strong></p>
+        </div>
+      </div>
+
+      <p class="tip-text">👤 Designed for one student at a time in front of the camera.</p>
+
+      <button id="startBtn" class="primary-btn">Allow Camera &amp; Start 🎥</button>
+      <p id="statusMsg" class="status-msg"></p>
+    </section>
+
+    <!-- SCREEN 2: Active Gameplay Screen -->
+    <main id="gameScreen" class="game-layout hidden">
+      <!-- Left Column: Mirrored Webcam Feed + Live Tilt Gauge -->
+      <div class="camera-panel card">
+        <div class="camera-wrapper">
+          <!-- Hidden raw webcam stream -->
+          <video id="webcamVideo" autoplay playsinline muted></video>
+          <!-- Visible mirrored canvas with eye-angle guide -->
+          <canvas id="outputCanvas" width="480" height="360"></canvas>
+          <div id="faceStatusBadge" class="face-badge">Looking for student...</div>
+        </div>
+
+        <!-- Real-Time Head Tilt Angle Meter -->
+        <div class="tilt-meter-container">
+          <div class="tilt-labels">
+            <span>⬅️ Left</span>
+            <span id="angleReadout">Center (0°)</span>
+            <span>Right ➡️</span>
+          </div>
+          <div class="tilt-track">
+            <div class="center-marker"></div>
+            <div id="tiltNeedle" class="tilt-needle"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Friction Sentence, Vocabulary Word & Answer Cards -->
+      <div class="question-panel card">
+        <div class="prompt-box">
+          <span class="label-tag">📖 Friction Example</span>
+          <h2 id="definitionText" class="definition-text">“Lighting a match stick”</h2>
+        </div>
+
+        <div class="word-box">
+          <span class="label-tag">🔤 Vocabulary Word</span>
+          <div id="vocabWordText" class="vocab-word">Useful</div>
+        </div>
+
+        <!-- Answer Zones with Hold-to-Confirm Progress Bars -->
+        <div class="choices-row">
+          <div id="leftChoiceCard" class="choice-card left-choice">
+            <div class="choice-header">⬅️ Tilt LEFT</div>
+            <div class="choice-meaning">Correct Match ✅</div>
+            <div class="progress-track">
+              <div id="leftProgressBar" class="progress-fill left-fill"></div>
+            </div>
+          </div>
+
+          <div id="rightChoiceCard" class="choice-card right-choice">
+            <div class="choice-header">Tilt RIGHT ➡️</div>
+            <div class="choice-meaning">Incorrect Match ❌</div>
+            <div class="progress-track">
+              <div id="rightProgressBar" class="progress-fill right-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feedback & Short Word Explanation Banner -->
+        <div id="feedbackBanner" class="feedback-banner hidden">
+          <div id="feedbackTitle" class="feedback-title">Correct ✅</div>
+          <p id="feedbackExplanation" class="feedback-explanation"></p>
+        </div>
+      </div>
+    </main>
+
+    <!-- SCREEN 3: End-of-Game Results Screen -->
+    <section id="endScreen" class="card center-card hidden">
+      <h2>🎉 Great Job! Round Complete!</h2>
+      <div id="finalScoreText" class="final-score">You scored 8 out of 8!</div>
+      <p id="finalMessage" class="intro-text"></p>
+      <button id="restartBtn" class="primary-btn">Play Again 🔄</button>
+    </section>
+  </div>
+
+  <!-- Load Game Logic & MediaPipe Face Mesh Script -->
+  <script src="script.js"></script>
+</body>
+</html>
